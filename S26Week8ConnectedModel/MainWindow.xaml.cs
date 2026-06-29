@@ -28,20 +28,20 @@ namespace S26Week8ConnectedModel
 
         private void LoadData()
         {
-            SqlConnection conn = new SqlConnection(connStr);
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "Select * from Employees";
+                SqlCommand cmd = new SqlCommand(query, conn);
 
-            string query = "Select * from Employees";
-            SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
 
-            conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
 
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            DataTable tbl = new DataTable();
-            tbl.Load(reader);
-            grdEmployees.ItemsSource = tbl.DefaultView;
-
-            conn.Close();
+                DataTable tbl = new DataTable();
+                tbl.Load(reader);
+                grdEmployees.ItemsSource = tbl.DefaultView;
+            }
+            //conn.Close();
         }
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)

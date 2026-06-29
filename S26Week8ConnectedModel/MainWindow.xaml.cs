@@ -72,5 +72,40 @@ namespace S26Week8ConnectedModel
                 grdEmployees.ItemsSource = tbl.DefaultView;
             }
         }
+
+        private void btnCount_Click(object sender, RoutedEventArgs e)
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "Select count(*) from Employees";
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                conn.Open();
+
+                int rows = (int)cmd.ExecuteScalar();
+
+                MessageBox.Show("Total rows = " + rows);
+            }
+        }
+
+        private void btnInsert_Click(object sender, RoutedEventArgs e)
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "insert into Employees(FirstName, LastName) values (@fn, @ln)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("fn", txtFirstname.Text);
+                cmd.Parameters.AddWithValue("ln", txtLastname.Text);
+
+                conn.Open();
+
+                int result = cmd.ExecuteNonQuery();
+
+                if (result == 1)
+                    MessageBox.Show("New employee added");
+                else
+                    MessageBox.Show("New employee not added");
+            }
+        }
     }
 }

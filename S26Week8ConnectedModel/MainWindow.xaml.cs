@@ -48,5 +48,29 @@ namespace S26Week8ConnectedModel
         {
             LoadData();
         }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            // string concatenation - NO
+            //string query = "select * from Employees where FirstName='" + txtFirstname.Text + "'";
+
+            // command parameters - YES
+            string query = "select * from Employees where FirstName=@fn";
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("fn", txtFirstname.Text);
+
+                conn.Open();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                DataTable tbl = new DataTable();
+                tbl.Load(reader);
+
+                grdEmployees.ItemsSource = tbl.DefaultView;
+            }
+        }
     }
 }
